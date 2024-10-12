@@ -58,25 +58,38 @@
       timeElement.textContent = `${hours}:${minutes}`;
     }
 
-    // Fonction pour changer l'image quand l'utilisateur en sélectionne une nouvelle
+    // Fonction pour changer l'image et la stocker dans localStorage
     function changeImage(event) {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-          document.getElementById('image').src = e.target.result;
+          const imgSrc = e.target.result;
+          document.getElementById('image').src = imgSrc;
+          localStorage.setItem('savedImage', imgSrc); // Stocker l'image dans localStorage
         }
         reader.readAsDataURL(file);
       }
     }
 
-    // Fonction pour ouvrir le sélecteur de fichier quand on clique sur l'image
+    // Fonction pour charger l'image à partir du localStorage si elle existe
+    function loadImageFromStorage() {
+      const savedImage = localStorage.getItem('savedImage');
+      if (savedImage) {
+        document.getElementById('image').src = savedImage;
+      }
+    }
+
+    // Ouvrir le sélecteur de fichier quand on clique sur l'image
     document.getElementById('image').addEventListener('click', function() {
       document.getElementById('fileInput').click();
     });
 
     // Écouter le changement de fichier et appeler changeImage
     document.getElementById('fileInput').addEventListener('change', changeImage);
+
+    // Charger l'image sauvegardée si elle existe
+    loadImageFromStorage();
 
     // Mettre à jour l'heure toutes les secondes
     setInterval(updateTime, 1000);
