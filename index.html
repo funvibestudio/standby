@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Standby Mode</title>
+  <title>Mode Veille</title>
   <style>
     * {
       margin: 0;
@@ -33,14 +33,21 @@
       height: 100%;
       object-fit: cover;
       border-radius: 20px;
+      cursor: pointer;
+    }
+    #fileInput {
+      display: none;
     }
   </style>
 </head>
 <body>
   <div class="time" id="time">00:00</div>
   <div class="photo">
-    <img src="https://compagnieaerienne.fr/wp-content/uploads/2021/12/Hublot-avion-scaled.jpeg" alt="Photo">
+    <img id="image" src="https://compagnieaerienne.fr/wp-content/uploads/2021/12/Hublot-avion-scaled.jpeg" alt="Photo">
   </div>
+
+  <!-- Input caché pour le choix de fichier -->
+  <input type="file" id="fileInput" accept="image/*">
 
   <script>
     function updateTime() {
@@ -50,6 +57,28 @@
       const minutes = String(now.getMinutes()).padStart(2, '0');
       timeElement.textContent = `${hours}:${minutes}`;
     }
+
+    // Fonction pour changer l'image quand l'utilisateur en sélectionne une nouvelle
+    function changeImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('image').src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Fonction pour ouvrir le sélecteur de fichier quand on clique sur l'image
+    document.getElementById('image').addEventListener('click', function() {
+      document.getElementById('fileInput').click();
+    });
+
+    // Écouter le changement de fichier et appeler changeImage
+    document.getElementById('fileInput').addEventListener('change', changeImage);
+
+    // Mettre à jour l'heure toutes les secondes
     setInterval(updateTime, 1000);
     updateTime();
   </script>
